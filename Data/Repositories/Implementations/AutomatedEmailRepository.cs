@@ -25,6 +25,7 @@ namespace ChurchManagementApi.Data.Repositories.Implementations
         public async Task<List<AutomatedEmail>> GetAutomatedEmailsToSend()
         {
             return await _dataContext.AutomatedEmails
+                .Include(x => x.ChurchUser)
                 .Where(x => DateTime.Now > x.SendingDate.AddHours(-2) && !x.Sent)
                 .ToListAsync();
         }

@@ -9,6 +9,7 @@ namespace ChurchManagementApi.Data.Repositories.Implementations
         Task DeleteGroupMember(Guid churchUserId, Guid memberId);
         Task<Group> GetGroup(Guid churchUserId, Guid groupId);
         Task<List<Group>> GetGroups(Guid churchUserId);
+        Task<List<Group>> GetGroups(Guid churchUserId, List<Guid> groupIds);
         Task UpdateGroup(Group group);
     }
 }

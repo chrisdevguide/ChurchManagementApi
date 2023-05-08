@@ -13,7 +13,7 @@ namespace ChurchManagementApi.Services.Implementations
         public string Subject { get; set; }
         [Required]
         public string Content { get; set; }
-        [Required]
         public List<Guid> Recipients { get; set; }
+        public List<Guid> Groups { get; set; }
     }
 }

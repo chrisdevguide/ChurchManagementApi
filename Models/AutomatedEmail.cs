@@ -18,7 +18,7 @@ namespace ChurchManagementApi.Models
         [Required]
         public Guid ChurchUserId { get; set; }
         public ChurchUser ChurchUser { get; set; }
-        [Required]
         public List<Guid> Recipients { get; set; }
+        public List<Guid> Groups { get; set; }
     }
 }

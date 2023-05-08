@@ -11,13 +11,15 @@ namespace ChurchManagementApi.Services.Implementations
         private readonly IMapper _mapper;
         private readonly IEmailServices _emailServices;
         private readonly IMemberRepository _memberRepository;
+        private readonly IGroupRepository _groupRepository;
 
-        public AutomatedEmailServices(IAutomatedEmailRepository automatedEmailRepository, IMapper mapper, IEmailServices emailServices, IMemberRepository memberRepository)
+        public AutomatedEmailServices(IAutomatedEmailRepository automatedEmailRepository, IMapper mapper, IEmailServices emailServices, IMemberRepository memberRepository, IGroupRepository groupRepository)
         {
             _automatedEmailRepository = automatedEmailRepository;
             _mapper = mapper;
             _emailServices = emailServices;
             _memberRepository = memberRepository;
+            _groupRepository = groupRepository;
         }
 
         public async Task<List<AutomatedEmail>> GetAutomatedEmails(Guid churchUserId)
@@ -45,6 +47,14 @@ namespace ChurchManagementApi.Services.Implementations
             if (automatedEmail.Sent) throw new ApiException("Correo automatizado ya ha sido enviado.");
             automatedEmail = _mapper.Map<AutomatedEmail>(request);
             automatedEmail.ChurchUserId = churchUserId;
+            List<Group> groups = await _groupRepository.GetGroups(churchUserId, request.Groups);
+            groups.ForEach(x =>
+            {
+                x.Members.ForEach(member =>
+                {
+                    if (!automatedEmail.Recipients.Contains(member.Id)) automatedEmail.Recipients.Add(member.Id);
+                });
+            });
             await _automatedEmailRepository.UpdateAutomatedEmail(automatedEmail);
         }
 
@@ -60,6 +70,14 @@ namespace ChurchManagementApi.Services.Implementations
             automatedEmailsToSend.ForEach(email =>
             {
                 List<string> recipients = _memberRepository.GetMembers(email.Recipients).Result.Select(x => x.Email).ToList();
+                List<Group> groups = _groupRepository.GetGroups(email.ChurchUserId, email.Groups).Result;
+                groups.ForEach(x =>
+                {
+                    x.Members.ForEach(member =>
+                    {
+                        if (!recipients.Contains(member.Email)) recipients.Add(member.Email);
+                    });
+                });
                 _emailServices.SendEmail(email, recipients);
                 email.Sent = true;
             });

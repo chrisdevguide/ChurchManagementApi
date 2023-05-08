@@ -20,6 +20,14 @@ namespace ChurchManagementApi.Data.Repositories.Implementations
                 .ToListAsync();
         }
 
+        public async Task<List<Group>> GetGroups(Guid churchUserId, List<Guid> groupIds)
+        {
+            return await _dataContext.Groups
+                .Include(x => x.Members)
+                .Where(x => x.ChurchUserId == churchUserId && groupIds.Contains(x.Id))
+                .ToListAsync();
+        }
+
         public async Task<Group> GetGroup(Guid churchUserId, Guid groupId)
         {
             return await _dataContext.Groups

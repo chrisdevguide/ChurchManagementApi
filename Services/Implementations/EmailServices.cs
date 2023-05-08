@@ -28,9 +28,9 @@ namespace ChurchManagementApi.Services.Implementations
         }
         public void SendEmail(AutomatedEmail email, List<string> recipients)
         {
-            MailMessage mailMessage = new MailMessage
+            MailMessage mailMessage = new()
             {
-                From = new MailAddress(_configuration.GetValue<string>("AppSmtpClient:Username")),
+                From = new MailAddress(_configuration.GetValue<string>("AppSmtpClient:Username"), email.ChurchUser.ChurchName),
                 Subject = email.Subject,
                 IsBodyHtml = true
             };
