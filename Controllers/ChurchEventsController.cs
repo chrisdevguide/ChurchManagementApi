@@ -23,9 +23,10 @@ namespace ChurchManagementApi.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<ChurchEvent>> GetChurchEvent(Guid churchEventId)
         {
-            return Ok(await _churchEventServices.GetChurchEvent(User.GetChurchUserId(), churchEventId));
+            return Ok(await _churchEventServices.GetChurchEvent(churchEventId));
         }
 
         [HttpPost]

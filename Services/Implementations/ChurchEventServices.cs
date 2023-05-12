@@ -21,9 +21,9 @@ namespace ChurchManagementApi.Services.Implementations
             return await _churchEventRepository.GetChurchEvents(churchUserId);
         }
 
-        public async Task<ChurchEvent> GetChurchEvent(Guid churchUserId, Guid ChurchEventId)
+        public async Task<ChurchEvent> GetChurchEvent(Guid ChurchEventId)
         {
-            ChurchEvent churchEvent = await _churchEventRepository.GetChurchEvent(churchUserId, ChurchEventId);
+            ChurchEvent churchEvent = await _churchEventRepository.GetChurchEvent(ChurchEventId);
             churchEvent.Participants = null;
             return churchEvent;
         }
