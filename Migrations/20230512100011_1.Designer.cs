@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChurchManagementApi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230504181436_8")]
-    partial class _8
+    [Migration("20230512100011_1")]
+    partial class _1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -31,24 +31,69 @@ namespace ChurchManagementApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("ChurchUserId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<List<Guid>>("Groups")
+                        .HasColumnType("uuid[]");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<List<Guid>>("Recipients")
-                        .IsRequired()
                         .HasColumnType("uuid[]");
 
                     b.Property<DateTime>("SendingDate")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<bool>("Sent")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("ChurchUserId");
+
                     b.ToTable("AutomatedEmails");
+                });
+
+            modelBuilder.Entity("ChurchManagementApi.Models.ChurchEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ChurchUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("text");
+
+                    b.Property<List<string>>("Participants")
+                        .HasColumnType("text[]");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChurchUserId");
+
+                    b.ToTable("ChurchEvents");
                 });
 
             modelBuilder.Entity("ChurchManagementApi.Models.ChurchUser", b =>
@@ -176,6 +221,28 @@ namespace ChurchManagementApi.Migrations
                     b.HasIndex("MembersId");
 
                     b.ToTable("GroupMember");
+                });
+
+            modelBuilder.Entity("ChurchManagementApi.Models.AutomatedEmail", b =>
+                {
+                    b.HasOne("ChurchManagementApi.Models.ChurchUser", "ChurchUser")
+                        .WithMany()
+                        .HasForeignKey("ChurchUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChurchUser");
+                });
+
+            modelBuilder.Entity("ChurchManagementApi.Models.ChurchEvent", b =>
+                {
+                    b.HasOne("ChurchManagementApi.Models.ChurchUser", "ChurchUser")
+                        .WithMany()
+                        .HasForeignKey("ChurchUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChurchUser");
                 });
 
             modelBuilder.Entity("ChurchManagementApi.Models.Group", b =>

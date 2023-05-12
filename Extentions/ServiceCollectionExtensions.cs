@@ -35,7 +35,7 @@ namespace ChurchManagementApi.Extentions
 
             services.AddCors((options) =>
             {
-                options.AddDefaultPolicy(builder => { builder.WithOrigins((isDevelopment) ? "http://localhost:4200" : "https://victorious-island-087a10203.3.azurestaticapps.net").AllowAnyHeader().AllowAnyMethod(); });
+                options.AddDefaultPolicy(builder => { builder.WithOrigins((isDevelopment) ? "http://localhost:4200" : "https://ministrymanager-1.web.app").AllowAnyHeader().AllowAnyMethod(); });
             });
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
