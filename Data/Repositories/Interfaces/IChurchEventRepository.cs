@@ -7,6 +7,7 @@ namespace ChurchManagementApi.Data.Repositories.Implementations
         Task AddChurchEvent(ChurchEvent ChurchEvent);
         Task<bool> ChurchEventExists(Guid churchUserId, Guid ChurchEventId);
         Task DeleteChurchEvent(ChurchEvent ChurchEvent);
+        Task<ChurchEvent> GetChurchEvent(Guid ChurchEventId);
         Task<ChurchEvent> GetChurchEvent(Guid churchUserId, Guid ChurchEventId);
         Task<List<ChurchEvent>> GetChurchEvents(Guid churchUserId);
         Task UpdateChurchEvent(ChurchEvent ChurchEvent);

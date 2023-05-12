@@ -7,5 +7,6 @@ namespace ChurchManagementApi.Services.Implementations
         Task ResetPassword(string email);
         Task<ChurchUserDto> SignIn(SignInRequestDto request);
         Task<ChurchUserDto> SignUp(SignUpRequestDto request);
+        Task UpdateChurchUser(Guid churchUserId, UpdateChurchUserRequestDto request);
     }
 }

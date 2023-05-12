@@ -60,6 +60,28 @@ namespace ChurchManagementApi.Services.Implementations
             };
         }
 
+        public async Task UpdateChurchUser(Guid churchUserId, UpdateChurchUserRequestDto request)
+        {
+            ChurchUser churchUser = await _churchUserRepository.GetChurchUser(churchUserId, request.Username) ?? throw new ApiException("El usuario no existe.");
+
+            if (!string.IsNullOrEmpty(request.OldPassword) && !string.IsNullOrEmpty(request.NewPassword))
+            {
+                using HMACSHA512 hmac = new(churchUser.PasswordSalt);
+
+                if (!HashPassword(hmac, request.OldPassword).SequenceEqual(churchUser.PasswordHash)) throw new ApiException("La antigua contraseña es incorrecta.");
+
+                using HMACSHA512 newHmac = new();
+
+                churchUser.PasswordHash = HashPassword(newHmac, request.NewPassword);
+                churchUser.PasswordSalt = newHmac.Key;
+            }
+
+            churchUser.Username = request.Username;
+            churchUser.ChurchName = request.ChurchName;
+
+            await _churchUserRepository.UpdateChurchUser(churchUser);
+        }
+
         public async Task ResetPassword(string email)
         {
             ChurchUser churchUser = await _churchUserRepository.GetChurchUser(email);

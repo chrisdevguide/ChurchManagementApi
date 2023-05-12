@@ -78,7 +78,10 @@ namespace ChurchManagementApi.Services.Implementations
                         if (!recipients.Contains(member.Email)) recipients.Add(member.Email);
                     });
                 });
-                _emailServices.SendEmail(email, recipients);
+                if (recipients.Count > 0)
+                {
+                    _emailServices.SendEmail(email, recipients);
+                }
                 email.Sent = true;
             });
             await _automatedEmailRepository.UpdateAutomatedEmails(automatedEmailsToSend);

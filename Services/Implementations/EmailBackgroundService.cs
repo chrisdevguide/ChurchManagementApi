@@ -2,7 +2,6 @@
 {
     public class EmailBackgroundService : BackgroundService
     {
-        private readonly IAutomatedEmailServices _automatedEmailServices;
         private readonly IServiceProvider _serviceProvider;
 
         public EmailBackgroundService(IServiceProvider serviceProvider)
@@ -26,7 +25,7 @@
                 }
 
 
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                await Task.Delay(TimeSpan.FromHours(6), stoppingToken);
             }
         }
     }

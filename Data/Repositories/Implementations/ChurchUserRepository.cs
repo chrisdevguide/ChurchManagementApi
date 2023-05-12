@@ -28,6 +28,11 @@ namespace ChurchManagementApi.Data.Repositories.Implementations
             return await _dataContext.ChurchUsers.SingleOrDefaultAsync(u => u.Username == username);
         }
 
+        public async Task<ChurchUser> GetChurchUser(Guid churchUserId, string username)
+        {
+            return await _dataContext.ChurchUsers.SingleOrDefaultAsync(u => u.Username == username && u.Id == churchUserId);
+        }
+
         public async Task UpdateChurchUser(ChurchUser churchUser)
         {
             _dataContext.ChurchUsers.Update(churchUser);

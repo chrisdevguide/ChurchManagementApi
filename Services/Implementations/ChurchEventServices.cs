@@ -2,7 +2,6 @@
 using ChurchManagementApi.Data.Repositories.Implementations;
 using ChurchManagementApi.Dtos;
 using ChurchManagementApi.Models;
-using ChurchManagementApi.Services.Interfaces;
 
 namespace ChurchManagementApi.Services.Implementations
 {
@@ -10,13 +9,11 @@ namespace ChurchManagementApi.Services.Implementations
     {
         private readonly IChurchEventRepository _churchEventRepository;
         private readonly IMapper _mapper;
-        private readonly IMemberRepository _memberRepository;
 
-        public ChurchEventServices(IChurchEventRepository churchEventRepository, IMapper mapper, IMemberRepository memberRepository)
+        public ChurchEventServices(IChurchEventRepository churchEventRepository, IMapper mapper)
         {
             _churchEventRepository = churchEventRepository;
             _mapper = mapper;
-            _memberRepository = memberRepository;
         }
 
         public async Task<List<ChurchEvent>> GetChurchEvents(Guid churchUserId)
@@ -26,8 +23,17 @@ namespace ChurchManagementApi.Services.Implementations
 
         public async Task<ChurchEvent> GetChurchEvent(Guid churchUserId, Guid ChurchEventId)
         {
-            return await _churchEventRepository.GetChurchEvent(churchUserId, ChurchEventId);
+            ChurchEvent churchEvent = await _churchEventRepository.GetChurchEvent(churchUserId, ChurchEventId);
+            churchEvent.Participants = null;
+            return churchEvent;
+        }
 
+        public async Task SubscribeAtChurchEvent(SubscribeAtChurchEventRequestDto request)
+        {
+            ChurchEvent churchEvent = await _churchEventRepository.GetChurchEvent(request.ChurchEventId) ?? throw new ApiException("El evento no existe");
+            if (churchEvent.Participants.Contains(request.Participant)) throw new ApiException("El participante ya está inscrito.");
+            churchEvent.Participants.Add(request.Participant);
+            await _churchEventRepository.UpdateChurchEvent(churchEvent);
         }
 
         public async Task AddChurchEvent(Guid churchUserId, ChurchEventDto request)

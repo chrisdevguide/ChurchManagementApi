@@ -1,7 +1,5 @@
 ﻿using ChurchManagementApi.Models;
 using Microsoft.EntityFrameworkCore;
-using System.IO.Compression;
-using System.Text;
 
 namespace ChurchManagementApi.Data.Repositories.Implementations
 {
@@ -64,31 +62,6 @@ namespace ChurchManagementApi.Data.Repositories.Implementations
         {
             _dataContext.AutomatedEmails.Remove(automatedEmail);
             await _dataContext.SaveChangesAsync();
-        }
-
-        private string CompressString(string text)
-        {
-            byte[] contentBytes = Encoding.UTF8.GetBytes(text);
-
-            using MemoryStream ms = new MemoryStream();
-            using GZipStream gz = new(ms, CompressionMode.Compress, true);
-            gz.Write(contentBytes);
-
-            return Convert.ToBase64String(ms.ToArray());
-        }
-
-        private string Decompress(string compressedText)
-        {
-            byte[] compressedBytes = Convert.FromBase64String(compressedText);
-
-            using MemoryStream compressedStream = new(compressedBytes);
-            using MemoryStream decompressedStream = new();
-            using DeflateStream decompressionStream = new(compressedStream, CompressionMode.Decompress);
-
-            decompressionStream.CopyTo(decompressedStream);
-
-            byte[] decompressedBytes = decompressedStream.ToArray();
-            return Encoding.UTF8.GetString(decompressedBytes);
         }
 
     }

@@ -1,7 +1,8 @@
 ﻿using ChurchManagementApi.Dtos;
 using ChurchManagementApi.Extentions;
 using ChurchManagementApi.Models;
-using ChurchManagementApi.Services.Interfaces;
+using ChurchManagementApi.Services.Implementations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChurchManagementApi.Controllers
@@ -21,6 +22,12 @@ namespace ChurchManagementApi.Controllers
             return Ok(await _churchEventServices.GetChurchEvents(User.GetChurchUserId()));
         }
 
+        [HttpGet]
+        public async Task<ActionResult<ChurchEvent>> GetChurchEvent(Guid churchEventId)
+        {
+            return Ok(await _churchEventServices.GetChurchEvent(User.GetChurchUserId(), churchEventId));
+        }
+
         [HttpPost]
         public async Task<ActionResult> AddChurchEvent(ChurchEventDto request)
         {
@@ -33,6 +40,14 @@ namespace ChurchManagementApi.Controllers
         {
             await _churchEventServices.UpdateChurchEvent(User.GetChurchUserId(), request);
             return Ok();
+        }
+
+        [HttpPut]
+        [AllowAnonymous]
+        public async Task<ActionResult<string>> SubscribeAtChurchEvent(SubscribeAtChurchEventRequestDto request)
+        {
+            await _churchEventServices.SubscribeAtChurchEvent(request);
+            return Ok(request.RedirectUrl);
         }
 
         [HttpDelete]

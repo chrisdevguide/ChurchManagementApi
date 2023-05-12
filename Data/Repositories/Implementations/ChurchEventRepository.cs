@@ -21,6 +21,12 @@ namespace ChurchManagementApi.Data.Repositories.Implementations
         }
 
 
+        public async Task<ChurchEvent> GetChurchEvent(Guid ChurchEventId)
+        {
+            return await _dataContext.ChurchEvents
+                .SingleOrDefaultAsync(x => x.Id == ChurchEventId);
+        }
+
         public async Task<ChurchEvent> GetChurchEvent(Guid churchUserId, Guid ChurchEventId)
         {
             return await _dataContext.ChurchEvents
